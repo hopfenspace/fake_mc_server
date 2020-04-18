@@ -1,0 +1,32 @@
+{
+    "version": {
+        "name": "derp",
+        "protocol": 47
+    },
+    "players": {
+        "max": 100,
+        "online": 4,
+        "sample": [
+            {
+                "name": "This is a fake Minecraft server",
+                "id": "4566e69f-c907-48ee-8d71-d7ba5aa00d21"
+            },
+            {
+                "name": "It is powered by rust and the Ozelot Library",
+                "id": "4566e69f-c907-48ee-8d71-d7ba5aa00d22"
+            },
+            {
+                "name": "Check it out on Github:",
+                "id": "4566e69f-c907-48ee-8d71-d7ba5aa00d23"
+            },
+            {
+                "name": "https://github.com/hopfenspace/fake_mc_server",
+                "id": "4566e69f-c907-48ee-8d71-d7ba5aa00d24"
+            }
+        ]
+    },	
+    "description": {
+        "text": "\u00A7kXXX\u00A7r \u00A72Fake MC Server!\u00A7r \u00A74Can't touch this!\u00A7r \u00A7kXXX\u00A7r"
+    },
+    "favicon": "data:image/png;base64,<data>"
+}

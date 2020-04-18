@@ -1,0 +1,14 @@
+[package]
+edition = "2018"
+name = "fake_mc_server"
+description = "Server responding to server list status pings, but does not allow to connect."
+version = "0.1.0"
+authors = ["Jakob Löw <jakob@m4gnus.de>"]
+repository = "https://github.com/hopfenspace/fake_mc_server"
+keywords = ["minecraft", "mc", "mcmodern"]
+categories = ["games"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ozelot = "0.8.0"
