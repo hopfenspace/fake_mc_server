@@ -2,6 +2,7 @@ mod error;
 use error::FakeMcError;
 
 use std::fs;
+use std::thread;
 use std::net::{TcpListener, TcpStream};
 
 use ozelot::{Server, ClientState};
@@ -36,8 +37,7 @@ fn handle_connection(stream_result: std::io::Result<TcpStream>) -> Result<(), Fa
 		{
 			match packet
 			{
-				ServerboundPacket::Handshake(ref p) =>
-				{
+				ServerboundPacket::Handshake(ref p) => {
 
 					println!("Received connection to {}:{}", p.get_server_address(), p.get_server_port());
 
@@ -52,6 +52,11 @@ fn handle_connection(stream_result: std::io::Result<TcpStream>) -> Result<(), Fa
 					break 'outer;
 
 				},
+				ServerboundPacket::StatusPing(ref p) => {
+					let response = ozelot::clientbound::StatusPong::new(p.get_id().clone());
+					conn.send(response)?;
+					conn.write()?;
+				}
 				_ => {},
 			}
 		}
@@ -65,11 +70,13 @@ fn main() -> std::io::Result<()>
 	let listener = TcpListener::bind("127.0.0.1:25565")?;
 	for stream_result in listener.incoming()
 	{
-		match handle_connection(stream_result)
-		{
-			Ok(_) => {},
-			Err(e) => println!("Error: {}", e),
-		}
+		thread::spawn(move|| {
+			match handle_connection(stream_result)
+			{
+				Ok(_) => {},
+				Err(e) => println!("Error: {}", e),
+			}
+		});
 	}
 
 	return Ok(());
