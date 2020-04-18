@@ -67,7 +67,7 @@ fn handle_connection(stream_result: std::io::Result<TcpStream>) -> Result<(), Fa
 
 fn main() -> std::io::Result<()>
 {
-	let listener = TcpListener::bind("127.0.0.1:25565")?;
+	let listener = TcpListener::bind("0.0.0.0:25565")?;
 	for stream_result in listener.incoming()
 	{
 		thread::spawn(move|| {
