@@ -1,8 +1,7 @@
 mod error;
 use error::FakeMcError;
 
-use std::fs;
-use std::thread;
+use std::{fs, thread};
 use std::net::{TcpListener, TcpStream};
 
 use ozelot::{Server, ClientState};
@@ -29,8 +28,10 @@ fn send_disconnect(conn: &mut Server) -> Result<(), FakeMcError>
 fn handle_connection(stream_result: std::io::Result<TcpStream>) -> Result<(), FakeMcError>
 {
 	let mut conn = Server::from_tcpstream(stream_result?)?;
+	let mut had_handshake = false;
+	let mut had_ping = false;
 
-	'outer: loop
+	loop
 	{
 		let packets = conn.read()?;
 		for packet in packets
@@ -38,7 +39,6 @@ fn handle_connection(stream_result: std::io::Result<TcpStream>) -> Result<(), Fa
 			match packet
 			{
 				ServerboundPacket::Handshake(ref p) => {
-
 					println!("Received connection to {}:{}", p.get_server_address(), p.get_server_port());
 
 					match p.get_next_clientstate() {
@@ -47,22 +47,24 @@ fn handle_connection(stream_result: std::io::Result<TcpStream>) -> Result<(), Fa
 						_ => {},
 					}
 
-					conn.write()?;
-					conn.close()?;
-					break 'outer;
-
+					had_handshake = true;
 				},
 				ServerboundPacket::StatusPing(ref p) => {
 					let response = ozelot::clientbound::StatusPong::new(p.get_id().clone());
 					conn.send(response)?;
-					conn.write()?;
-				}
+
+					had_ping = true;
+				},
 				_ => {},
 			}
 		}
-	}
 
-	return Ok(());
+		if had_handshake && had_ping {
+			conn.write()?;
+			conn.close()?;
+			return Ok(());
+		}
+	}
 }
 
 fn main() -> std::io::Result<()>
